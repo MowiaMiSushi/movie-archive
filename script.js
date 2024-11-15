@@ -263,3 +263,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+window.selectMovie = async function(movieId) {
+    try {
+        const response = await fetch(
+            `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=pl-PL`
+        );
+        const movieData = await response.json();
+        openReviewModal(movieData);
+    } catch (error) {
+        console.error('Błąd pobierania szczegółów filmu:', error);
+    }
+};
+
+window.handleMovieSelection = async function(movieId) {
+    try {
+        const response = await fetch(
+            `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=pl-PL`
+        );
+        const movieData = await response.json();
+        openReviewModal(movieData);
+        
+        const searchResults = document.getElementById('search-results');
+        const searchInput = document.getElementById('search-input');
+        searchResults.innerHTML = '';
+        searchInput.value = '';
+    } catch (error) {
+        console.error('Błąd pobierania szczegółów filmu:', error);
+    }
+};
