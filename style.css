@@ -1,0 +1,375 @@
+/* Zmienne globalne */
+:root {
+    --primary-color: #1a1a1a;
+    --secondary-color: #ffffff;
+    --accent-color: #ff6b6b;
+    --background-color: #f5f5f5;
+    --text-color: #333333;
+}
+
+/* Ciemny motyw */
+.dark-theme {
+    --primary-color: #ffffff;
+    --secondary-color: #1a1a1a;
+    --accent-color: #ff6b6b;
+    --background-color: #121212;
+    --text-color: #ffffff;
+}
+
+/* Stylowanie strony */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+/* Stylowanie nagłówka */
+header {
+    background-color: var(--secondary-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 1rem;
+}
+
+/* Stylowanie nawigacji */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Stylowanie loga */
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+/* Stylowanie sekcji wyszukiwania */
+.search-section {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Stylowanie kontenera wyszukiwania */
+.search-container {
+    position: relative;
+}
+
+/* Stylowanie pola wyszukiwania */
+#search-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Stylowanie wyników wyszukiwania */
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Stylowanie pojedynczego wyniku wyszukiwania */
+.search-result {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Efekt hover dla wyniku wyszukiwania */
+.search-result:hover {
+    background-color: var(--background-color);
+}
+
+/* Stylowanie obrazu wyniku wyszukiwania */
+.search-result img {
+    width: 50px;
+    height: 75px;
+    object-fit: cover;
+    margin-right: 1rem;
+    border-radius: 3px;
+}
+
+/* Stylowanie diva z informacjami o filmie */
+.search-result div {
+    flex: 1;
+}
+
+/* Stylowanie h3 z tytułem filmu */
+.search-result h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+/* Stylowanie p z datą filmu */
+.search-result p {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Stylowanie siatki filmów */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Stylowanie karty filmu */
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--secondary-color);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+/* Stylowanie obrazu filmu */
+.movie-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+/* Stylowanie diva z informacjami o filmie */
+.movie-info {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Stylowanie h3 z tytułem filmu */
+.movie-info h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.2rem;
+}
+
+/* Stylowanie p z oceną filmu */
+.movie-rating {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Stylowanie modalu */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 2000;
+}
+
+/* Stylowanie kontentu modalu */
+.modal-content {
+    background-color: var(--background-color);
+    margin: 5% auto;
+    padding: 2rem;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 10px;
+    position: relative;
+}
+
+/* Stylowanie przycisku zamykania modalu */
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+/* Stylowanie diva z informacjami o filmie w modalu */
+.modal-movie-info {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Stylowanie obrazu filmu w modalu */
+.modal-movie-info img {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Stylowanie formularza recenzji */
+#review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Stylowanie pola tekstowego recenzji */
+#review-text {
+    width: 100%;
+    min-height: 150px;
+    padding: 1rem;
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    resize: vertical;
+}
+
+/* Stylowanie pola oceny */
+#rating {
+    width: 100px;
+    padding: 0.5rem;
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Stylowanie przycisku zapisu recenzji */
+#review-form button {
+    padding: 1rem 2rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+/* Efekt hover dla przycisku zapisu recenzji */
+#review-form button:hover {
+    background-color: #ff5252;
+}
+
+/* Nowe style dla sekcji */
+.watched-movies-section,
+.suggestions-section {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Stylowanie h2 z tytułem sekcji */
+section h2 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+/* Stylowanie pseudoelementu pozycjonującego podkreślenie */
+section h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background-color: var(--accent-color);
+}
+
+/* Stylowanie footer */
+footer {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    padding: 2rem;
+    margin-top: 4rem;
+}
+
+/* Stylowanie diva z treścią footer */
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Stylowanie nawigacji */
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent-color);
+}
+
+/* Stylowanie przycisku usuwania */
+.movie-card {
+    position: relative;
+}
+
+.delete-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 1;
+}
+
+.delete-button:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+/* Dodaj efekt hover dla karty filmu */
+.movie-card .delete-button {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-card:hover .delete-button {
+    opacity: 1;
+}

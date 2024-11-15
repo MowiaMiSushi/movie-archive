@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Archiwum</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="script.js" defer></script>
+</head>
+<body class="light-theme">
+    <header>
+        <nav>
+            <div class="logo">Moje Archiwum</div>
+            <ul class="nav-links">
+                <li><a href="#movies-section">Recenzje</a></li>
+                <li><a href="#suggestions-section">Sugestie</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Wyszukaj film / serial...">
+                <div id="search-results" class="search-results"></div>
+            </div>
+        </section>
+
+        <section id="movies-section" class="movies-section">
+            <h2> ObejrzaneFilmy i Seriale - Moje Recenzje</h2>
+            <div id="movies-grid" class="movies-grid"></div>
+        </section>
+
+        <section id="suggestions-section" class="suggestions-section">
+            <h2>Sugerowane Filmy i Seriale</h2>
+            <div id="suggestions-grid" class="movies-grid"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Moje Archiwum Filmowe tworzone przez Aleksander Wacławik. Wszystkie prawa zastrzeżone.</p>
+            <p>Powered by TMDB API</p>
+        </div>
+    </footer>
+
+    <div id="movie-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="review-form">
+                <div class="movie-details"></div>
+                <textarea id="review-text" placeholder="Twoja recenzja..."></textarea>
+                <input type="number" id="rating" min="1" max="10" placeholder="Ocena (1-10)">
+                <button type="submit">Zapisz recenzję</button>
+            </form>
+        </div>
+    </div>
+
+    
+</body>
+</html>
