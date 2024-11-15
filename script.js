@@ -1,4 +1,4 @@
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const TMDB_API_KEY = '45918179a58278fb2d1356ca66eb55a3';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -6,15 +6,28 @@ const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const themeToggle = document.getElementById('theme-toggle');
 const body = document.body;
 
+// Dodaj na początku pliku script.js
+function isLocalStorageAvailable() {
+    try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
 // Wczytaj zapisany motyw
-const savedTheme = localStorage.getItem('theme') || 'light';
+const savedTheme = isLocalStorageAvailable() ? localStorage.getItem('theme') || 'light' : 'light';
 body.classList.add(`${savedTheme}-theme`);
 
 themeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-theme');
     body.classList.toggle('light-theme');
-    const currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
-    localStorage.setItem('theme', currentTheme);
+    if (isLocalStorageAvailable()) {
+        const currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+        localStorage.setItem('theme', currentTheme);
+    }
 });
 
 // Wyszukiwanie filmów
@@ -39,12 +52,19 @@ searchInput.addEventListener('input', (e) => {
 async function searchMovies(query) {
     try {
         const response = await fetch(
-            `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${query}&language=pl-PL`
+            `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${query}&language=pl-PL`,
+            {
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
         );
         const data = await response.json();
         displaySearchResults(data.results.slice(0, 5));
     } catch (error) {
         console.error('Błąd wyszukiwania:', error);
+        searchResults.innerHTML = '<p>Wystąpił błąd podczas wyszukiwania.</p>';
     }
 }
 
@@ -52,8 +72,9 @@ function displaySearchResults(movies) {
     searchResults.innerHTML = movies
         .map(movie => `
             <div class="search-result" onclick="handleMovieSelection('${movie.id}')">
-                <img src="${movie.poster_path ? TMDB_IMAGE_BASE_URL + movie.poster_path : 'placeholder.jpg'}" 
-                     alt="${movie.title}">
+                <img src="${movie.poster_path ? TMDB_IMAGE_BASE_URL + movie.poster_path : 'https://via.placeholder.com/50x75'}" 
+                     alt="${movie.title}"
+                     onerror="this.src='https://via.placeholder.com/50x75'">
                 <div>
                     <h3>${movie.title}</h3>
                     <p>${movie.release_date?.split('-')[0] || 'Brak daty'}</p>
@@ -90,7 +111,10 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 });
 
 // Zarządzanie recenzjami
-let reviews = JSON.parse(localStorage.getItem('movieReviews')) || [];
+let reviews = [];
+if (isLocalStorageAvailable()) {
+    reviews = JSON.parse(localStorage.getItem('movieReviews')) || [];
+}
 
 function saveReview(movieData, reviewText, rating) {
     const review = {
@@ -104,7 +128,9 @@ function saveReview(movieData, reviewText, rating) {
     };
     
     reviews.push(review);
-    localStorage.setItem('movieReviews', JSON.stringify(reviews));
+    if (isLocalStorageAvailable()) {
+        localStorage.setItem('movieReviews', JSON.stringify(reviews));
+    }
     displayReviews();
     displaySuggestions();
 }
@@ -223,7 +249,9 @@ displaySuggestions();
 function deleteReview(reviewId) {
     if (confirm('Czy na pewno chcesz usunąć tę recenzję?')) {
         reviews = reviews.filter(review => review.id !== reviewId);
-        localStorage.setItem('movieReviews', JSON.stringify(reviews));
+        if (isLocalStorageAvailable()) {
+            localStorage.setItem('movieReviews', JSON.stringify(reviews));
+        }
         displayReviews();
         displaySuggestions();
     }
