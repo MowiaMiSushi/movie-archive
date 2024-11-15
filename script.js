@@ -2,6 +2,84 @@ const TMDB_API_KEY = '45918179a58278fb2d1356ca66eb55a3';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
+// Najpierw zdefiniujmy funkcje w globalnym zakresie
+function openReviewModal(movieData) {
+    const modal = document.getElementById('movie-modal');
+    const movieDetails = modal.querySelector('.movie-details');
+    const form = document.getElementById('review-form');
+    
+    movieDetails.innerHTML = `
+        <div class="modal-movie-info">
+            <img src="${TMDB_IMAGE_BASE_URL + movieData.poster_path}" alt="${movieData.title}">
+            <div>
+                <h2>${movieData.title}</h2>
+                <p>${movieData.release_date?.split('-')[0] || 'Brak daty'}</p>
+                <p>${movieData.overview || 'Brak opisu'}</p>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+    
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.onclick = () => {
+        modal.style.display = 'none';
+    };
+    
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        const reviewText = document.getElementById('review-text').value;
+        const rating = document.getElementById('rating').value;
+        
+        if (reviewText && rating) {
+            saveReview(movieData, reviewText, rating);
+            modal.style.display = 'none';
+            form.reset();
+        }
+    };
+}
+
+// Funkcja do sprawdzania dostępności localStorage
+function isLocalStorageAvailable() {
+    try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+// Globalne funkcje do obsługi wyboru filmu
+window.selectMovie = async function(movieId) {
+    try {
+        const response = await fetch(
+            `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=pl-PL`
+        );
+        const movieData = await response.json();
+        openReviewModal(movieData);
+    } catch (error) {
+        console.error('Błąd pobierania szczegółów filmu:', error);
+    }
+};
+
+window.handleMovieSelection = async function(movieId) {
+    try {
+        const response = await fetch(
+            `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=pl-PL`
+        );
+        const movieData = await response.json();
+        openReviewModal(movieData);
+        
+        const searchResults = document.getElementById('search-results');
+        const searchInput = document.getElementById('search-input');
+        searchResults.innerHTML = '';
+        searchInput.value = '';
+    } catch (error) {
+        console.error('Błąd pobierania szczegółów filmu:', error);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded'); // debugging
 
@@ -198,47 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `).join('');
     }
 
-    // Funkcja otwierająca modal z formularzem recenzji
-    function openReviewModal(movieData) {
-        const modal = document.getElementById('movie-modal');
-        const movieDetails = modal.querySelector('.movie-details');
-        const form = document.getElementById('review-form');
-        
-        // Wypełnij szczegóły filmu
-        movieDetails.innerHTML = `
-            <div class="modal-movie-info">
-                <img src="${TMDB_IMAGE_BASE_URL + movieData.poster_path}" alt="${movieData.title}">
-                <div>
-                    <h2>${movieData.title}</h2>
-                    <p>${movieData.release_date?.split('-')[0] || 'Brak daty'}</p>
-                    <p>${movieData.overview || 'Brak opisu'}</p>
-                </div>
-            </div>
-        `;
-        
-        // Pokaż modal
-        modal.style.display = 'block';
-        
-        // Obsługa zamykania modalu
-        const closeBtn = modal.querySelector('.close');
-        closeBtn.onclick = () => {
-            modal.style.display = 'none';
-        };
-        
-        // Obsługa formularza
-        form.onsubmit = (e) => {
-            e.preventDefault();
-            const reviewText = document.getElementById('review-text').value;
-            const rating = document.getElementById('rating').value;
-            
-            if (reviewText && rating) {
-                saveReview(movieData, reviewText, rating);
-                modal.style.display = 'none';
-                form.reset();
-            }
-        };
-    }
-
     // Obsługa kliknięcia poza modalem
     window.onclick = (event) => {
         const modal = document.getElementById('movie-modal');
@@ -263,32 +300,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
-
-window.selectMovie = async function(movieId) {
-    try {
-        const response = await fetch(
-            `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=pl-PL`
-        );
-        const movieData = await response.json();
-        openReviewModal(movieData);
-    } catch (error) {
-        console.error('Błąd pobierania szczegółów filmu:', error);
-    }
-};
-
-window.handleMovieSelection = async function(movieId) {
-    try {
-        const response = await fetch(
-            `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=pl-PL`
-        );
-        const movieData = await response.json();
-        openReviewModal(movieData);
-        
-        const searchResults = document.getElementById('search-results');
-        const searchInput = document.getElementById('search-input');
-        searchResults.innerHTML = '';
-        searchInput.value = '';
-    } catch (error) {
-        console.error('Błąd pobierania szczegółów filmu:', error);
-    }
-};
