@@ -316,14 +316,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const body = document.body;
 
     if (themeToggle) {
+        // Sprawdź zapisany motyw lub ustaw domyślny
         const savedTheme = localStorage.getItem('theme') || 'light';
-        body.classList.add(`${savedTheme}-theme`);
+        body.className = `${savedTheme}-theme`; // Zmiana z classList.add na bezpośrednie przypisanie klasy
 
         themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-theme');
-            body.classList.toggle('light-theme');
-            const currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
-            localStorage.setItem('theme', currentTheme);
+            const isCurrentlyDark = body.classList.contains('dark-theme');
+            body.className = isCurrentlyDark ? 'light-theme' : 'dark-theme';
+            localStorage.setItem('theme', isCurrentlyDark ? 'light' : 'dark');
         });
     }
 
@@ -463,6 +463,7 @@ function generateStars(rating) {
 // Utwórz nowy plik config.js
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+const TMDB_API_KEY = '24d863d54c86392e6e1df55b9a328755';
 
 // Zmodyfikuj funkcje API, aby używały fetch z headerami autoryzacji
 async function fetchFromTMDB(endpoint) {
