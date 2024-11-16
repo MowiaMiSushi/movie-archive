@@ -60,7 +60,6 @@
                 <button class="tab-button" data-category="scifi">Sci-Fi</button>
             </div>
             <div id="movies-container" class="movies-grid">
-                <!-- Tutaj będą wyświetlane filmy -->
             </div>
         </section>
     </main>
@@ -79,7 +78,8 @@
             <span class="close">&times;</span>
             <form id="review-form">
                 <div class="movie-details"></div>
-                <textarea id="review-text" placeholder="Twoja recenzja..."></textarea>
+                <div class="review-text-container">
+                <textarea id="review-text" placeholder="Twoja recenzja..."></textarea></div>
                 <input type="number" id="rating" min="1" max="10" placeholder="Ocena (1-10)">
                 <button type="submit">Zapisz recenzję</button>
             </form>

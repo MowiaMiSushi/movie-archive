@@ -257,7 +257,9 @@ nav {
     max-height: 90vh;
     overflow-y: auto;
 }
-
+.review-text-container {
+    margin-right: 32px;
+}
 /* Stylowanie przycisku zamykania modalu */
 .close {
     position: absolute;
