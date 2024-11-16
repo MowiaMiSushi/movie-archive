@@ -74,11 +74,10 @@ function displayReviews() {
 
 // Funkcje obsługi modalu
 function openReviewModal(movieData) {
-    console.log('Otwieranie modalu dla filmu:', movieData); // Debugging
-
     const modal = document.getElementById('movie-modal');
     const movieDetails = modal.querySelector('.movie-details');
     const form = document.getElementById('review-form');
+    const closeBtn = modal.querySelector('.close');
 
     movieDetails.innerHTML = `
         <div class="modal-movie-info">
@@ -92,56 +91,41 @@ function openReviewModal(movieData) {
     `;
 
     modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Blokuje scrollowanie body
+    document.body.style.overflow = 'hidden';
 
-    // Obsługa zamykania
     const closeModal = () => {
         modal.style.display = 'none';
-        document.body.style.overflow = ''; // Przywraca scrollowanie
+        document.body.style.overflow = '';
         form.reset();
+        const counter = document.querySelector('.character-counter');
+        if (counter) counter.remove();
     };
 
-    // Zamykanie przez przycisk
-    const closeBtn = modal.querySelector('.close');
-    closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        closeModal();
-    });
+    closeBtn.replaceWith(closeBtn.cloneNode(true));
+    const newCloseBtn = modal.querySelector('.close');
+    newCloseBtn.addEventListener('click', closeModal);
 
-    // Zamykanie przez kliknięcie poza modalem
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
 
-    // Obsługa formularza
-    form.onsubmit = function (e) {
+    form.onsubmit = async function(e) {
         e.preventDefault();
-        console.log('Formularz wysłany'); // Debugging
-
         const reviewText = document.getElementById('review-text').value;
         const rating = document.getElementById('rating').value;
 
-        console.log('Dane formularza:', { reviewText, rating }); // Debugging
-
         if (reviewText && rating) {
-            try {
-                saveReview(movieData, reviewText, parseInt(rating));
-                modal.style.display = 'none';
-                form.reset();
-            } catch (error) {
-                console.error('Błąd podczas zapisywania recenzji:', error);
-            }
+            await saveReview(movieData, reviewText, parseInt(rating));
+            closeModal();
+            displayWatchedMovies();
         } else {
             alert('Proszę wypełnić wszystkie pola formularza');
         }
     };
 
     const reviewText = document.getElementById('review-text');
-    reviewText.maxLength = 300; // Dodanie limitu znaków
+    reviewText.maxLength = 300;
     
-    // Dodanie licznika znaków
     const container = reviewText.parentElement;
     const counter = document.createElement('div');
     counter.className = 'character-counter';
@@ -416,6 +400,32 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }, { passive: false });
     });
+
+    // Obsługa burger menu
+    const burgerMenu = document.querySelector('.burger-menu');
+    const navLinks = document.querySelector('.nav-links');
+    const navOverlay = document.querySelector('.nav-overlay');
+
+    burgerMenu.addEventListener('click', () => {
+        burgerMenu.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        navOverlay.classList.toggle('active');
+        document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    });
+
+    // Zamykanie menu po kliknięciu w link lub overlay
+    const closeMenu = () => {
+        burgerMenu.classList.remove('active');
+        navLinks.classList.remove('active');
+        navOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    navOverlay.addEventListener('click', closeMenu);
 });
 
 // Dodaj nową funkcję do otwierania szczegółów recenzji
@@ -583,3 +593,4 @@ async function displayMoviesByCategory(category) {
         moviesContainer.innerHTML = '<p>Wystąpił błąd podczas ładowania filmów.</p>';
     }
 }
+
