@@ -135,7 +135,7 @@ function openReviewModal(movieData) {
             const container = reviewText.parentElement;
             const counter = document.createElement('div');
             counter.className = 'character-counter';
-            counter.textContent = '0/300 znaków';
+            counter.textContent = '0/300';
             container.appendChild(counter);
 
             reviewText.addEventListener('input', function() {
