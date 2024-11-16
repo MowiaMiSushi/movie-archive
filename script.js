@@ -1,7 +1,3 @@
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
-
 // Globalne zmienne
 let reviews = [];
 
@@ -462,4 +458,86 @@ function generateStars(rating) {
         ${halfStar ? '<i class="fas fa-star-half-alt"></i>' : ''}
         ${Array(emptyStars).fill('<i class="far fa-star"></i>').join('')}
     `;
+}
+
+// Utwórz nowy plik config.js
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
+// Zmodyfikuj funkcje API, aby używały fetch z headerami autoryzacji
+async function fetchFromTMDB(endpoint) {
+    const response = await fetch(`${TMDB_BASE_URL}${endpoint}`, {
+        headers: {
+            'Authorization': 'Bearer twój_token_dostępu',
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.json();
+}
+
+// Przykład użycia w funkcjach:
+async function searchMovies(query) {
+    try {
+        const data = await fetchFromTMDB(`/search/movie?query=${query}&language=pl-PL`);
+        displaySearchResults(data.results.slice(0, 5));
+    } catch (error) {
+        console.error('Błąd wyszukiwania:', error);
+        const searchResults = document.getElementById('search-results');
+        if (searchResults) {
+            searchResults.innerHTML = '<p>Wystąpił błąd podczas wyszukiwania.</p>';
+        }
+    }
+}
+
+async function getSuggestedMovies(movieId) {
+    try {
+        const data = await fetchFromTMDB(`/movie/${movieId}/recommendations?language=pl-PL`);
+        return data.results.slice(0, 6);
+    } catch (error) {
+        console.error('Błąd pobierania sugestii:', error);
+        return [];
+    }
+}
+
+async function fetchMoviesByGenre(genreId) {
+    try {
+        const data = await fetchFromTMDB(`/discover/movie?with_genres=${genreId}&language=pl-PL&sort_by=popularity.desc`);
+        return data.results;
+    } catch (error) {
+        console.error('Błąd pobierania filmów z kategorii:', error);
+        return [];
+    }
+}
+
+async function displayMoviesByCategory(category) {
+    const moviesContainer = document.getElementById('movies-container');
+    if (!moviesContainer) return;
+
+    let movies = [];
+
+    try {
+        if (category === 'all') {
+            const data = await fetchFromTMDB('/movie/popular?language=pl-PL');
+            movies = data.results;
+        } else {
+            movies = await fetchMoviesByGenre(GENRE_IDS[category]);
+        }
+
+        moviesContainer.innerHTML = movies
+            .map(movie => `
+                <div class="movie-card" onclick="selectMovie('${movie.id}')">
+                    <img src="${TMDB_IMAGE_BASE_URL + movie.poster_path}" 
+                         alt="${movie.title}"
+                         onerror="this.src='https://via.placeholder.com/300x450'">
+                    <div class="movie-info">
+                        <h3>${movie.title}</h3>
+                        <p>${movie.release_date?.split('-')[0] || 'Brak daty'}</p>
+                        <p class="movie-rating">Ocena: ${movie.vote_average.toFixed(1)}/10</p>
+                    </div>
+                </div>
+            `).join('');
+    } catch (error) {
+        console.error('Błąd wyświetlania filmów:', error);
+        moviesContainer.innerHTML = '<p>Wystąpił błąd podczas ładowania filmów.</p>';
+    }
 }
