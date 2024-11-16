@@ -1,4 +1,4 @@
-const TMDB_API_KEY = '45918179a58278fb2d1356ca66eb55a3';
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -61,14 +61,16 @@ function displayReviews() {
     moviesGrid.innerHTML = reviews
         .map(review => `
             <div class="movie-card">
-                <div class="delete-button" onclick="deleteReview(${review.id})">
+                <div class="delete-button" onclick="event.stopPropagation(); deleteReview(${review.id})">
                     <i class="fas fa-times"></i>
                 </div>
-                <img src="${TMDB_IMAGE_BASE_URL + review.posterPath}" alt="${review.movieTitle}">
-                <div class="movie-info">
-                    <h3>${review.movieTitle}</h3>
-                    <p>Ocena: ${review.rating}/10</p>
-                    <p>${review.review.substring(0, 100)}${review.review.length > 100 ? '...' : ''}</p>
+                <div class="movie-card-content" onclick="openReviewDetails(${review.id})">
+                    <img src="${TMDB_IMAGE_BASE_URL + review.posterPath}" alt="${review.movieTitle}">
+                    <div class="movie-info">
+                        <h3>${review.movieTitle}</h3>
+                        <p>Ocena: ${review.rating}/10</p>
+                        <p>${review.review.substring(0, 100)}${review.review.length > 100 ? '...' : ''}</p>
+                    </div>
                 </div>
             </div>
         `).join('');
@@ -94,13 +96,28 @@ function openReviewModal(movieData) {
     `;
 
     modal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Blokuje scrollowanie body
 
-    // Obsługa zamykania modalu
-    const closeBtn = modal.querySelector('.close');
-    closeBtn.onclick = () => {
+    // Obsługa zamykania
+    const closeModal = () => {
         modal.style.display = 'none';
+        document.body.style.overflow = ''; // Przywraca scrollowanie
         form.reset();
     };
+
+    // Zamykanie przez przycisk
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeModal();
+    });
+
+    // Zamykanie przez kliknięcie poza modalem
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
 
     // Obsługa formularza
     form.onsubmit = function (e) {
@@ -368,4 +385,81 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Wyświetl domyślną kategorię (wszystkie)
     displayMoviesByCategory('all');
+
+    // Dodaj na początku pliku obsługę dotykową
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('touchmove', (e) => {
+            if (e.target === modal) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    });
 });
+
+// Dodaj nową funkcję do otwierania szczegółów recenzji
+function openReviewDetails(reviewId) {
+    const review = reviews.find(r => r.id === reviewId);
+    if (!review) return;
+
+    const modal = document.getElementById('review-details-modal');
+    const movieDetails = modal.querySelector('.movie-details');
+    const reviewText = modal.querySelector('.review-text');
+    const ratingDisplay = modal.querySelector('.rating-display');
+    const reviewDate = modal.querySelector('.review-date');
+
+    movieDetails.innerHTML = `
+        <div class="modal-movie-info">
+            <img src="${TMDB_IMAGE_BASE_URL + review.posterPath}" alt="${review.movieTitle}">
+            <div>
+                <h2>${review.movieTitle}</h2>
+            </div>
+        </div>
+    `;
+
+    ratingDisplay.innerHTML = `
+        <div class="rating-stars">
+            <span class="rating-number">Ocena: ${review.rating}/10</span>
+            ${generateStars(review.rating)}
+        </div>
+    `;
+
+    reviewText.textContent = review.review;
+    reviewDate.textContent = `Data recenzji: ${new Date(review.date).toLocaleDateString('pl-PL')}`;
+
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Blokuje scrollowanie body
+
+    // Obsługa zamykania
+    const closeModal = () => {
+        modal.style.display = 'none';
+        document.body.style.overflow = ''; // Przywraca scrollowanie
+    };
+
+    // Zamykanie przez przycisk
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeModal();
+    });
+
+    // Zamykanie przez kliknięcie poza modalem
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+}
+
+// Funkcja pomocnicza do generowania gwiazdek
+function generateStars(rating) {
+    const fullStars = Math.floor(rating / 2);
+    const halfStar = rating % 2 >= 1;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return `
+        ${Array(fullStars).fill('<i class="fas fa-star"></i>').join('')}
+        ${halfStar ? '<i class="fas fa-star-half-alt"></i>' : ''}
+        ${Array(emptyStars).fill('<i class="far fa-star"></i>').join('')}
+    `;
+}

@@ -50,7 +50,7 @@
             <div id="suggestions-grid" class="movies-grid"></div>
         </section>
 
-        <section class="categories-section">
+        <section class="categories-section" id="categories-section">
             <div class="tabs">
                 <button class="tab-button active" data-category="all">Wszystkie</button>
                 <button class="tab-button" data-category="action">Akcja</button>
@@ -86,6 +86,20 @@
         </div>
     </div>
 
+    <div id="review-details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="review-details-container">
+                <div class="movie-details"></div>
+                <div class="full-review">
+                    <h3>Moja recenzja:</h3>
+                    <div class="rating-display"></div>
+                    <p class="review-text"></p>
+                    <p class="review-date"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 
