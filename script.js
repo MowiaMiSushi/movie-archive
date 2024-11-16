@@ -314,18 +314,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // Zarządzanie motywem
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
+    const icon = themeToggle.querySelector('i');
 
-    if (themeToggle) {
-        // Sprawdź zapisany motyw lub ustaw domyślny
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        body.className = `${savedTheme}-theme`; // Zmiana z classList.add na bezpośrednie przypisanie klasy
+    // Wczytaj zapisany motyw
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    body.classList.remove('light-theme', 'dark-theme');
+    body.classList.add(`${savedTheme}-theme`);
+    
+    // Ustaw odpowiednią ikonę
+    icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 
-        themeToggle.addEventListener('click', () => {
-            const isCurrentlyDark = body.classList.contains('dark-theme');
-            body.className = isCurrentlyDark ? 'light-theme' : 'dark-theme';
-            localStorage.setItem('theme', isCurrentlyDark ? 'light' : 'dark');
-        });
-    }
+    themeToggle.addEventListener('click', () => {
+        const isDark = body.classList.contains('dark-theme');
+        
+        // Przełącz klasy
+        body.classList.remove('light-theme', 'dark-theme');
+        body.classList.add(isDark ? 'light-theme' : 'dark-theme');
+        
+        // Przełącz ikonę
+        icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        
+        // Zapisz preferencję
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
 
     // Wyszukiwanie filmów
     const searchInput = document.getElementById('search-input');
@@ -460,26 +471,42 @@ function generateStars(rating) {
     `;
 }
 
-// Utwórz nowy plik config.js
+// Konfiguracja TMDB API
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const TMDB_API_KEY = '24d863d54c86392e6e1df55b9a328755';
+const TMDB_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNGQ4NjNkNTRjODYzOTJlNmUxZGY1NWI5YTMyODc1NSIsInN1YiI6IjY1ZTg3NmM5OTYzODY0MDE4NmI4OWZhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.BgD5J6KwXSzwjw0bH6TLjQQ-veMexE2-YyYBb-8Iy4U';
 
-// Zmodyfikuj funkcje API, aby używały fetch z headerami autoryzacji
+// Funkcja pomocnicza do wykonywania zapytań do TMDB API
 async function fetchFromTMDB(endpoint) {
-    const response = await fetch(`${TMDB_BASE_URL}${endpoint}`, {
-        headers: {
-            'Authorization': 'Bearer twój_token_dostępu',
-            'Content-Type': 'application/json'
+    try {
+        const url = `${TMDB_BASE_URL}${endpoint}`;
+        const finalUrl = endpoint.includes('?') ? 
+            `${url}&api_key=${TMDB_API_KEY}` : 
+            `${url}?api_key=${TMDB_API_KEY}`;
+            
+        const response = await fetch(finalUrl, {
+            headers: {
+                'Authorization': `Bearer ${TMDB_ACCESS_TOKEN}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    });
-    return response.json();
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Błąd podczas pobierania danych z TMDB:', error);
+        throw error;
+    }
 }
 
-// Przykład użycia w funkcjach:
+// Przykład użycia w funkcji wyszukiwania
 async function searchMovies(query) {
     try {
-        const data = await fetchFromTMDB(`/search/movie?query=${query}&language=pl-PL`);
+        const data = await fetchFromTMDB(`/search/movie?query=${encodeURIComponent(query)}&language=pl-PL`);
         displaySearchResults(data.results.slice(0, 5));
     } catch (error) {
         console.error('Błąd wyszukiwania:', error);
