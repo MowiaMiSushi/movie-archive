@@ -65,7 +65,7 @@ function displayReviews() {
                     <div class="movie-info">
                         <h3>${review.movieTitle}</h3>
                         <p>Ocena: ${review.rating}/10</p>
-                        <p>${review.review.substring(0, 100)}${review.review.length > 100 ? '...' : ''}</p>
+                        <p class="review-preview">${review.review.slice(0, 100).trim()}${review.review.length > 100 ? '...' : ''}</p>
                     </div>
                 </div>
             </div>
@@ -137,6 +137,20 @@ function openReviewModal(movieData) {
             alert('Proszę wypełnić wszystkie pola formularza');
         }
     };
+
+    const reviewText = document.getElementById('review-text');
+    reviewText.maxLength = 300; // Dodanie limitu znaków
+    
+    // Dodanie licznika znaków
+    const container = reviewText.parentElement;
+    const counter = document.createElement('div');
+    counter.className = 'character-counter';
+    counter.textContent = '0/300 znaków';
+    container.appendChild(counter);
+
+    reviewText.addEventListener('input', function() {
+        counter.textContent = `${this.value.length}/300 znaków`;
+    });
 }
 
 // Funkcje obsługi filmów
