@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,21 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="script.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="192x192" href="moje-archiwum.png">
 </head>
+
 <body class="light-theme">
     <header>
         <nav>
-            <div class="logo">Moje Archiwum</div>
+            <div class="logo">
+                <span class="logo-icon">🎬</span>
+                <span class="logo-text">Moje Archiwum</span>
+            </div>
             <ul class="nav-links">
                 <li><a href="#movies-section">Recenzje</a></li>
                 <li><a href="#suggestions-section">Sugestie</a></li>
+                <li><a href="#categories-section">Kategorie</a></li>
             </ul>
             <div class="nav-controls">
                 <button id="theme-toggle">
@@ -41,11 +49,27 @@
             <h2>Sugerowane Filmy i Seriale</h2>
             <div id="suggestions-grid" class="movies-grid"></div>
         </section>
+
+        <section class="categories-section">
+            <div class="tabs">
+                <button class="tab-button active" data-category="all">Wszystkie</button>
+                <button class="tab-button" data-category="action">Akcja</button>
+                <button class="tab-button" data-category="comedy">Komedia</button>
+                <button class="tab-button" data-category="drama">Dramat</button>
+                <button class="tab-button" data-category="horror">Horror</button>
+                <button class="tab-button" data-category="scifi">Sci-Fi</button>
+            </div>
+            <div id="movies-container" class="movies-grid">
+                <!-- Tutaj będą wyświetlane filmy -->
+            </div>
+        </section>
     </main>
 
     <footer>
         <div class="footer-content">
-            <p>&copy; 2024 Moje Archiwum Filmowe tworzone przez Aleksander Wacławik. Wszystkie prawa zastrzeżone.</p>
+            <p>&copy; 2024 Archiwum Filmowe tworzone przez Aleksander Wacławik. Wszystkie prawa zastrzeżone.</p>
+            <p>Strona dla osób uwielbiających film i seriale. Strona ma ułatwić zapamiętanie filmów i seriali, które
+                obejrzałeś oraz podpowiada podobne filmy względem tego co już obejrzałeś.</p>
             <p>Powered by TMDB API</p>
         </div>
     </footer>
@@ -62,6 +86,7 @@
         </div>
     </div>
 
-    
+
 </body>
+
 </html>

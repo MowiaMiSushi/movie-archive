@@ -2,7 +2,7 @@
 :root {
     --primary-color: #1a1a1a;
     --secondary-color: #ffffff;
-    --accent-color: #ff6b6b;
+    --accent-color: #a1db02;
     --background-color: #f5f5f5;
     --text-color: #333333;
 }
@@ -11,8 +11,8 @@
 .dark-theme {
     --primary-color: #ffffff;
     --secondary-color: #1a1a1a;
-    --accent-color: #ff6b6b;
-    --background-color: #121212;
+    --accent-color: #a1db02;
+    --background-color: #353535;
     --text-color: #ffffff;
 }
 
@@ -29,8 +29,8 @@ body {
 /* Stylowanie nagłówka */
 header {
     background-color: var(--secondary-color);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    padding: 1rem;
+    box-shadow: 0 2px 5px #0000001a;
+    padding: 16px;
 }
 
 /* Stylowanie nawigacji */
@@ -42,16 +42,65 @@ nav {
     margin: 0 auto;
 }
 
-/* Stylowanie loga */
+/* Stylowanie logo */
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logo-icon {
+    font-size: 28px;
+    animation: spin 10s linear infinite;
+    display: inline-block;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
     color: var(--accent-color);
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Animacja dla ikony */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Efekt hover */
+.logo:hover .logo-icon {
+    animation-duration: 3s;
+}
+
+.logo:hover .logo-text {
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 20px;
+    }
+
+    .logo-icon {
+        font-size: 24px;
+    }
 }
 
 /* Stylowanie sekcji wyszukiwania */
 .search-section {
-    padding: 2rem;
+    padding: 32px;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -59,15 +108,16 @@ nav {
 /* Stylowanie kontenera wyszukiwania */
 .search-container {
     position: relative;
+    margin-right: 30px;
 }
 
 /* Stylowanie pola wyszukiwania */
 #search-input {
     width: 100%;
-    padding: 1rem;
+    padding: 16px;
     border: 2px solid var(--primary-color);
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 16px;
     background-color: var(--secondary-color);
     color: var(--text-color);
 }
@@ -80,7 +130,7 @@ nav {
     right: 0;
     background-color: var(--secondary-color);
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px #00000033;
     z-index: 1000;
     max-height: 400px;
     overflow-y: auto;
@@ -90,7 +140,7 @@ nav {
 .search-result {
     display: flex;
     align-items: center;
-    padding: 0.5rem;
+    padding: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -105,7 +155,7 @@ nav {
     width: 50px;
     height: 75px;
     object-fit: cover;
-    margin-right: 1rem;
+    margin-right: 16px;
     border-radius: 3px;
 }
 
@@ -117,14 +167,14 @@ nav {
 /* Stylowanie h3 z tytułem filmu */
 .search-result h3 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 16px;
     color: var(--text-color);
 }
 
 /* Stylowanie p z datą filmu */
 .search-result p {
-    margin: 0.25rem 0 0;
-    font-size: 0.9rem;
+    margin: 4px 0px 0px;
+    font-size: 14px;
     color: var(--text-color);
     opacity: 0.8;
 }
@@ -132,11 +182,12 @@ nav {
 /* Stylowanie siatki filmów */
 .movies-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    padding: 16px;
     max-width: 1200px;
     margin: 0 auto;
+    justify-content: center;
 }
 
 /* Stylowanie karty filmu */
@@ -147,7 +198,7 @@ nav {
     background-color: var(--secondary-color);
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px #0000001a;
     position: relative;
 }
 
@@ -161,17 +212,17 @@ nav {
 /* Stylowanie diva z informacjami o filmie */
 .movie-info {
     flex: 1;
-    padding: 1.5rem;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 8px;
 }
 
 /* Stylowanie h3 z tytułem filmu */
 .movie-info h3 {
     margin: 0;
     color: var(--text-color);
-    font-size: 1.2rem;
+    font-size: 16px;
 }
 
 /* Stylowanie p z oceną filmu */
@@ -188,7 +239,7 @@ nav {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.7);
+    background-color: #000000b3;
     z-index: 2000;
     overflow-y: auto;
     padding: 20px;
@@ -198,7 +249,7 @@ nav {
 .modal-content {
     background-color: var(--background-color);
     margin: 20px auto;
-    padding: 20px;
+    padding: 32px;
     width: 95%;
     max-width: 800px;
     border-radius: 10px;
@@ -210,9 +261,9 @@ nav {
 /* Stylowanie przycisku zamykania modalu */
 .close {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
-    font-size: 2rem;
+    right: 16px;
+    top: 16px;
+    font-size: 24px;
     cursor: pointer;
     color: var(--text-color);
 }
@@ -220,8 +271,8 @@ nav {
 /* Stylowanie diva z informacjami o filmie w modalu */
 .modal-movie-info {
     display: flex;
-    gap: 2rem;
-    margin-bottom: 2rem;
+    gap: 32px;
+    margin-bottom: 32px;
     flex-direction: column;
 }
 
@@ -237,14 +288,14 @@ nav {
 #review-form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 8px;
 }
 
 /* Stylowanie pola tekstowego recenzji */
 #review-text {
     width: 100%;
     min-height: 150px;
-    padding: 1rem;
+    padding: 16px;
     border: 1px solid var(--text-color);
     border-radius: 5px;
     background-color: var(--secondary-color);
@@ -255,7 +306,7 @@ nav {
 /* Stylowanie pola oceny */
 #rating {
     width: 100px;
-    padding: 0.5rem;
+    padding: 8px;
     border: 1px solid var(--text-color);
     border-radius: 5px;
     background-color: var(--secondary-color);
@@ -264,9 +315,9 @@ nav {
 
 /* Stylowanie przycisku zapisu recenzji */
 #review-form button {
-    padding: 1rem 2rem;
+    padding: 16px 32px;
     background-color: var(--accent-color);
-    color: white;
+    color: #ffffff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -276,13 +327,13 @@ nav {
 
 /* Efekt hover dla przycisku zapisu recenzji */
 #review-form button:hover {
-    background-color: #ff5252;
+    background-color: #a1db02;
 }
 
 /* Nowe style dla sekcji */
 .watched-movies-section,
 .suggestions-section {
-    padding: 2rem;
+    padding: 32px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -290,8 +341,8 @@ nav {
 /* Stylowanie h2 z tytułem sekcji */
 section h2 {
     color: var(--text-color);
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
+    margin-bottom: 24px;
+    font-size: 32px;
     text-align: center;
     position: relative;
 }
@@ -312,8 +363,8 @@ section h2::after {
 footer {
     background-color: var(--secondary-color);
     color: var(--text-color);
-    padding: 2rem;
-    margin-top: 4rem;
+    padding: 32px;
+    margin-top: 64px;
 }
 
 /* Stylowanie diva z treścią footer */
@@ -327,7 +378,7 @@ footer {
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 32px;
     margin: 0;
     padding: 0;
 }
@@ -337,6 +388,7 @@ footer {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
+    font-size: 25px;
 }
 
 .nav-links a:hover {
@@ -354,8 +406,8 @@ footer {
     right: 10px;
     width: 30px;
     height: 30px;
-    background-color: rgba(255, 0, 0, 0.8);
-    color: white;
+    background-color: #ff0000cc;
+    color: #ffffff;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -366,7 +418,7 @@ footer {
 }
 
 .delete-button:hover {
-    background-color: rgba(255, 0, 0, 1);
+    background-color: #ff0000;
 }
 
 /* Dodaj efekt hover dla karty filmu */
@@ -383,44 +435,44 @@ footer {
     .modal-movie-info {
         flex-direction: row;
     }
-    
+
     .modal-content {
         width: 90%;
-        padding: 2rem;
+        padding: 32px;
     }
 }
 
 .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
-    padding: 1rem;
+    gap: 16px;
+    padding: 16px;
 }
 
 @media (min-width: 768px) {
     .movies-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 2rem;
-        padding: 2rem;
+        gap: 32px;
+        padding: 32px;
     }
 }
 
 nav {
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 16px;
+    padding: 16px;
 }
 
 .nav-links {
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 16px;
 }
 
 @media (min-width: 768px) {
     nav {
         flex-direction: row;
     }
-    
+
     .nav-links {
         flex-direction: row;
     }
@@ -431,21 +483,21 @@ nav {
 }
 
 .movie-info {
-    padding: 1rem;
+    padding: 16px;
 }
 
 @media (min-width: 768px) {
     .movie-card img {
         height: 250px;
     }
-    
+
     .movie-info {
-        padding: 1.5rem;
+        padding: 24px;
     }
 }
 
 #review-form {
-    gap: 0.5rem;
+    gap: 8px;
 }
 
 #review-text {
@@ -454,9 +506,9 @@ nav {
 
 @media (min-width: 768px) {
     #review-form {
-        gap: 1rem;
+        gap: 16px;
     }
-    
+
     #review-text {
         min-height: 150px;
     }
@@ -465,13 +517,69 @@ nav {
 .search-section,
 .watched-movies-section,
 .suggestions-section {
-    padding: 1rem;
+    padding: 16px;
 }
 
 @media (min-width: 768px) {
+
     .search-section,
     .watched-movies-section,
     .suggestions-section {
-        padding: 2rem;
+        padding: 32px;
+    }
+}
+
+/* Stylowanie zakładek */
+.tabs {
+    display: flex;
+    gap: 8px;
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: center;
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 32px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.tab-button:hover {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.tab-button.active {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .tabs {
+        justify-content: flex-start;
+        padding: 8px;
+        gap: 4px;
+    }
+}
+
+/* Dodatkowe style dla lepszego wycentrowania na większych ekranach */
+@media (min-width: 1200px) {
+    .movies-grid {
+        grid-template-columns: repeat(auto-fit, 200px);
+        justify-content: center;
     }
 }
