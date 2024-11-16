@@ -18,6 +18,8 @@ function isLocalStorageAvailable() {
 
 // Funkcje obsługi recenzji
 function saveReview(movieData, reviewText, rating) {
+    console.log('Zapisywanie recenzji:', { movieData, reviewText, rating }); // Debugging
+    
     const review = {
         id: Date.now(),
         movieId: movieData.id,
@@ -29,9 +31,16 @@ function saveReview(movieData, reviewText, rating) {
     };
     
     reviews.push(review);
+    
     if (isLocalStorageAvailable()) {
-        localStorage.setItem('movieReviews', JSON.stringify(reviews));
+        try {
+            localStorage.setItem('movieReviews', JSON.stringify(reviews));
+            console.log('Recenzja zapisana w localStorage'); // Debugging
+        } catch (error) {
+            console.error('Błąd zapisu w localStorage:', error);
+        }
     }
+    
     displayReviews();
     displaySuggestions();
 }
@@ -58,6 +67,8 @@ function displayReviews() {
 
 // Funkcje obsługi modalu
 function openReviewModal(movieData) {
+    console.log('Otwieranie modalu dla filmu:', movieData); // Debugging
+    
     const modal = document.getElementById('movie-modal');
     const movieDetails = modal.querySelector('.movie-details');
     const form = document.getElementById('review-form');
@@ -75,20 +86,33 @@ function openReviewModal(movieData) {
     
     modal.style.display = 'block';
     
+    // Obsługa zamykania modalu
     const closeBtn = modal.querySelector('.close');
     closeBtn.onclick = () => {
         modal.style.display = 'none';
+        form.reset();
     };
     
-    form.onsubmit = (e) => {
+    // Obsługa formularza
+    form.onsubmit = function(e) {
         e.preventDefault();
+        console.log('Formularz wysłany'); // Debugging
+        
         const reviewText = document.getElementById('review-text').value;
         const rating = document.getElementById('rating').value;
         
+        console.log('Dane formularza:', { reviewText, rating }); // Debugging
+        
         if (reviewText && rating) {
-            saveReview(movieData, reviewText, rating);
-            modal.style.display = 'none';
-            form.reset();
+            try {
+                saveReview(movieData, reviewText, parseInt(rating));
+                modal.style.display = 'none';
+                form.reset();
+            } catch (error) {
+                console.error('Błąd podczas zapisywania recenzji:', error);
+            }
+        } else {
+            alert('Proszę wypełnić wszystkie pola formularza');
         }
     };
 }
@@ -261,4 +285,13 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'none';
         }
     };
+
+    // Dodaj inicjalizację formularza
+    const reviewForm = document.getElementById('review-form');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Formularz przechwycony przez event listener'); // Debugging
+        });
+    }
 });
