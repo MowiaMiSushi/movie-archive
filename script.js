@@ -74,67 +74,77 @@ function displayReviews() {
 
 // Funkcje obsługi modalu
 function openReviewModal(movieData) {
-    const modal = document.getElementById('movie-modal');
-    const movieDetails = modal.querySelector('.movie-details');
-    const form = document.getElementById('review-form');
-    const closeBtn = modal.querySelector('.close');
-
-    movieDetails.innerHTML = `
-        <div class="modal-movie-info">
-            <img src="${TMDB_IMAGE_BASE_URL + movieData.poster_path}" alt="${movieData.title}">
-            <div>
-                <h2>${movieData.title}</h2>
-                <p>${movieData.release_date?.split('-')[0] || 'Brak daty'}</p>
-                <p>${movieData.overview || 'Brak opisu'}</p>
-            </div>
-        </div>
-    `;
-
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-
-    const closeModal = () => {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-        form.reset();
-        const counter = document.querySelector('.character-counter');
-        if (counter) counter.remove();
-    };
-
-    closeBtn.replaceWith(closeBtn.cloneNode(true));
-    const newCloseBtn = modal.querySelector('.close');
-    newCloseBtn.addEventListener('click', closeModal);
-
-    modal.onclick = (e) => {
-        if (e.target === modal) closeModal();
-    };
-
-    form.onsubmit = async function(e) {
-        e.preventDefault();
-        const reviewText = document.getElementById('review-text').value;
-        const rating = document.getElementById('rating').value;
-
-        if (reviewText && rating) {
-            await saveReview(movieData, reviewText, parseInt(rating));
-            closeModal();
-            displayWatchedMovies();
-        } else {
-            alert('Proszę wypełnić wszystkie pola formularza');
-        }
-    };
-
-    const reviewText = document.getElementById('review-text');
-    reviewText.maxLength = 300;
+    const currentLang = localStorage.getItem('language') || 'pl';
+    const apiLang = currentLang === 'pl' ? 'pl-PL' : 'en-US';
     
-    const container = reviewText.parentElement;
-    const counter = document.createElement('div');
-    counter.className = 'character-counter';
-    counter.textContent = '0/300 znaków';
-    container.appendChild(counter);
+    fetch(`${TMDB_BASE_URL}/movie/${movieData.id}?api_key=${TMDB_API_KEY}&language=${apiLang}`)
+        .then(response => response.json())
+        .then(translatedMovieData => {
+            const modal = document.getElementById('movie-modal');
+            const movieDetails = modal.querySelector('.movie-details');
+            const form = document.getElementById('review-form');
+            const closeBtn = modal.querySelector('.close');
 
-    reviewText.addEventListener('input', function() {
-        counter.textContent = `${this.value.length}/300 znaków`;
-    });
+            movieDetails.innerHTML = `
+                <div class="modal-movie-info">
+                    <img src="${TMDB_IMAGE_BASE_URL + translatedMovieData.poster_path}" alt="${translatedMovieData.title}">
+                    <div>
+                        <h2>${translatedMovieData.title}</h2>
+                        <p>${translatedMovieData.release_date?.split('-')[0] || translations[currentLang].noDate}</p>
+                        <p>${translatedMovieData.overview || translations[currentLang].noDescription}</p>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            const closeModal = () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                form.reset();
+                const counter = document.querySelector('.character-counter');
+                if (counter) counter.remove();
+            };
+
+            closeBtn.replaceWith(closeBtn.cloneNode(true));
+            const newCloseBtn = modal.querySelector('.close');
+            newCloseBtn.addEventListener('click', closeModal);
+
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+
+            form.onsubmit = async function(e) {
+                e.preventDefault();
+                const reviewText = document.getElementById('review-text').value;
+                const rating = document.getElementById('rating').value;
+
+                if (reviewText && rating) {
+                    await saveReview(movieData, reviewText, parseInt(rating));
+                    closeModal();
+                    displayWatchedMovies();
+                } else {
+                    alert('Proszę wypełnić wszystkie pola formularza');
+                }
+            };
+
+            const reviewText = document.getElementById('review-text');
+            reviewText.maxLength = 300;
+            
+            const container = reviewText.parentElement;
+            const counter = document.createElement('div');
+            counter.className = 'character-counter';
+            counter.textContent = '0/300 znaków';
+            container.appendChild(counter);
+
+            reviewText.addEventListener('input', function() {
+                counter.textContent = `${this.value.length}/300 znaków`;
+            });
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania przetłumaczonych danych filmu:', error);
+        });
 }
 
 // Funkcje obsługi filmów
@@ -336,7 +346,12 @@ const translations = {
         loadingError: "Wystąpił błąd podczas ładowania filmów.",
         addReview: "Twoja recenzja...",
         appTitle: "Moje Archiwum",
-        noReviewsYet: "Dodaj recenzje, aby zobaczyć sugestie filmów."
+        noReviewsYet: "Dodaj recenzje, aby zobaczyć sugestie filmów.",
+        noDescription: "Brak opisu",
+        fillAllFields: "Proszę wypełnić wszystkie pola formularza",
+        myReviewTitle: "Moja recenzja:",
+        rating: "Ocena:",
+        reviewDate: "Data recenzji:"
     },
     en: {
         reviews: "Reviews",
@@ -368,7 +383,12 @@ const translations = {
         loadingError: "An error occurred while loading movies.",
         addReview: "Your review...",
         appTitle: "My Archive",
-        noReviewsYet: "Add reviews to see movie suggestions."
+        noReviewsYet: "Add reviews to see movie suggestions.",
+        noDescription: "No description",
+        fillAllFields: "Please fill in all form fields",
+        myReviewTitle: "My review:",
+        rating: "Rating:",
+        reviewDate: "Review date:"
     }
 };
 
@@ -570,6 +590,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Dodaj nową funkcję do otwierania szczegółów recenzji
 function openReviewDetails(reviewId) {
+    const currentLang = localStorage.getItem('language') || 'pl';
     const review = reviews.find(r => r.id === reviewId);
     if (!review) return;
 
@@ -578,6 +599,7 @@ function openReviewDetails(reviewId) {
     const reviewText = modal.querySelector('.review-text');
     const ratingDisplay = modal.querySelector('.rating-display');
     const reviewDate = modal.querySelector('.review-date');
+    const reviewTitle = modal.querySelector('.full-review h3');
 
     movieDetails.innerHTML = `
         <div class="modal-movie-info">
@@ -588,15 +610,17 @@ function openReviewDetails(reviewId) {
         </div>
     `;
 
+    reviewTitle.textContent = translations[currentLang].myReviewTitle;
+    
     ratingDisplay.innerHTML = `
         <div class="rating-stars">
-            <span class="rating-number">Ocena: ${review.rating}/10</span>
+            <span class="rating-number">${translations[currentLang].rating} ${review.rating}/10</span>
             ${generateStars(review.rating)}
         </div>
     `;
 
     reviewText.textContent = review.review;
-    reviewDate.textContent = `Data recenzji: ${new Date(review.date).toLocaleDateString('pl-PL')}`;
+    reviewDate.textContent = `${translations[currentLang].reviewDate} ${new Date(review.date).toLocaleDateString(currentLang === 'pl' ? 'pl-PL' : 'en-US')}`;
 
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden'; // Blokuje scrollowanie body
@@ -736,4 +760,27 @@ async function displayMoviesByCategory(category) {
         moviesContainer.innerHTML = `<p>${translations[currentLang].loadingError}</p>`;
     }
 }
+
+// Dodaj nowe klucze do istniejącego obiektu translations
+translations.pl = {
+    ...translations.pl,  // zachowaj istniejące tłumaczenia
+    yourReview: "Twoja recenzja...",
+    rating: "Ocena (1-10)",
+    saveReview: "Zapisz recenzję",
+    characters: "znaków",
+    noDescription: "Brak opisu",
+    fillAllFields: "Proszę wypełnić wszystkie pola formularza",
+    myReviewTitle: "Moja recenzja:"
+};
+
+translations.en = {
+    ...translations.en,  // zachowaj istniejące tłumaczenia
+    yourReview: "Your review...",
+    rating: "Rating (1-10)",
+    saveReview: "Save review",
+    characters: "characters",
+    noDescription: "No description",
+    fillAllFields: "Please fill in all form fields",
+    myReviewTitle: "My review:"
+};
 
