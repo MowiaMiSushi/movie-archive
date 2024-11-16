@@ -1,7 +1,9 @@
-// Globalne zmienne
+// Globalne zmienne do przechowywania recenzji
+// Global variables for storing reviews
 let reviews = [];
 
-// ID kategorii
+// ID kategorii filmowych używane w API TMDB
+// Movie category IDs used in TMDB API
 const GENRE_IDS = {
     action: 28,
     comedy: 35,
@@ -10,7 +12,8 @@ const GENRE_IDS = {
     scifi: 878
 };
 
-// Funkcje pomocnicze
+// Funkcja sprawdzająca dostępność localStorage w przeglądarce
+// Function checking localStorage availability in the browser
 function isLocalStorageAvailable() {
     try {
         localStorage.setItem('test', 'test');
@@ -21,7 +24,8 @@ function isLocalStorageAvailable() {
     }
 }
 
-// Funkcje obsługi recenzji
+// Funkcja zapisująca recenzję filmu w pamięci lokalnej
+// Function saving movie review in local storage
 function saveReview(movieData, reviewText, rating) {
     console.log('Zapisywanie recenzji:', { movieData, reviewText, rating }); // Debugging
 
@@ -49,7 +53,8 @@ function saveReview(movieData, reviewText, rating) {
     displayReviews();
     displaySuggestions();
 }
-
+// Funkcja wyświetlająca listę zapisanych recenzji
+// Function displaying list of saved reviews
 function displayReviews() {
     const moviesGrid = document.getElementById('movies-grid');
     if (!moviesGrid) return;
@@ -72,11 +77,12 @@ function displayReviews() {
         `).join('');
 }
 
-// Funkcje obsługi modalu
+// Funkcja otwierająca modal z formularzem recenzji
+// Function opening modal with review form
 function openReviewModal(movieData) {
     const currentLang = localStorage.getItem('language') || 'pl';
     const apiLang = currentLang === 'pl' ? 'pl-PL' : 'en-US';
-    
+
     fetch(`${TMDB_BASE_URL}/movie/${movieData.id}?api_key=${TMDB_API_KEY}&language=${apiLang}`)
         .then(response => response.json())
         .then(translatedMovieData => {
@@ -115,7 +121,7 @@ function openReviewModal(movieData) {
                 if (e.target === modal) closeModal();
             };
 
-            form.onsubmit = async function(e) {
+            form.onsubmit = async function (e) {
                 e.preventDefault();
                 const reviewText = document.getElementById('review-text').value;
                 const rating = document.getElementById('rating').value;
@@ -131,14 +137,14 @@ function openReviewModal(movieData) {
 
             const reviewText = document.getElementById('review-text');
             reviewText.maxLength = 300;
-            
+
             const container = reviewText.parentElement;
             const counter = document.createElement('div');
             counter.className = 'character-counter';
             counter.textContent = '0/300';
             container.appendChild(counter);
 
-            reviewText.addEventListener('input', function() {
+            reviewText.addEventListener('input', function () {
                 counter.textContent = `${this.value.length}/300 znaków`;
             });
         })
@@ -148,6 +154,7 @@ function openReviewModal(movieData) {
 }
 
 // Funkcje obsługi filmów
+// Movie handling functions
 window.selectMovie = async function (movieId) {
     try {
         const response = await fetch(
@@ -178,6 +185,7 @@ window.handleMovieSelection = async function (movieId) {
 };
 
 // Funkcja usuwania recenzji
+// Function for deleting review
 window.deleteReview = function (reviewId) {
     if (confirm('Czy na pewno chcesz usunąć tę recenzję?')) {
         reviews = reviews.filter(review => review.id !== reviewId);
@@ -189,7 +197,8 @@ window.deleteReview = function (reviewId) {
     }
 };
 
-// Funkcje wyszukiwania
+// Funkcja wyszukująca filmy w API TMDB
+// Function searching movies in TMDB API
 async function searchMovies(query) {
     try {
         const response = await fetch(
@@ -205,7 +214,8 @@ async function searchMovies(query) {
         }
     }
 }
-
+// Funkcja wyświetlająca wyniki wyszukiwania
+// Function displaying search results
 function displaySearchResults(movies) {
     const searchResults = document.getElementById('search-results');
     if (!searchResults) return;
@@ -224,7 +234,8 @@ function displaySearchResults(movies) {
         `).join('');
 }
 
-// Funkcje sugestii
+// Funkcja pobierająca sugerowane filmy z API
+// Function fetching suggested movies from API
 async function getSuggestedMovies(movieId) {
     try {
         const response = await fetch(
@@ -237,7 +248,8 @@ async function getSuggestedMovies(movieId) {
         return [];
     }
 }
-
+// Funkcja wyświetlająca sugerowane filmy
+// Function displaying suggested movies
 async function displaySuggestions() {
     const suggestionsGrid = document.getElementById('suggestions-grid');
     if (!suggestionsGrid) return;
@@ -265,6 +277,7 @@ async function displaySuggestions() {
 }
 
 // Funkcje do obsługi kategorii
+// Functions for category handling
 async function fetchMoviesByGenre(genreId) {
     try {
         const response = await fetch(
@@ -281,7 +294,7 @@ async function fetchMoviesByGenre(genreId) {
 async function displayMoviesByCategory(category) {
     const currentLang = localStorage.getItem('language') || 'pl';
     const apiLang = currentLang === 'pl' ? 'pl-PL' : 'en-US';
-    
+
     const moviesContainer = document.getElementById('movies-container');
     if (!moviesContainer) return;
 
@@ -314,7 +327,8 @@ async function displayMoviesByCategory(category) {
     }
 }
 
-// Dodaj na początku pliku słownik tłumaczeń
+// Słownik tłumaczeń dla interfejsu
+// Translation dictionary for interface
 const translations = {
     pl: {
         reviews: "Recenzje",
@@ -392,8 +406,9 @@ const translations = {
     }
 };
 
-// Dodaj w funkcji DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
+// Główna funkcja inicjalizująca aplikację po załadowaniu DOM
+// Main function initializing the application after DOM loads
+document.addEventListener('DOMContentLoaded', function () {
 
     if (isLocalStorageAvailable()) {
         reviews = JSON.parse(localStorage.getItem('movieReviews')) || [];
@@ -401,34 +416,35 @@ document.addEventListener('DOMContentLoaded', function() {
         displaySuggestions();
     }
 
-    // Zarządzanie motywem
+
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     const icon = themeToggle.querySelector('i');
 
-    // Wczytaj zapisany motyw
+
     const savedTheme = localStorage.getItem('theme') || 'light';
     body.classList.remove('light-theme', 'dark-theme');
     body.classList.add(`${savedTheme}-theme`);
-    
-    // Ustaw odpowiednią ikonę
+
+
     icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 
     themeToggle.addEventListener('click', () => {
         const isDark = body.classList.contains('dark-theme');
-        
-        // Przełącz klasy
+
+
         body.classList.remove('light-theme', 'dark-theme');
         body.classList.add(isDark ? 'light-theme' : 'dark-theme');
-        
-        // Przełącz ikonę
+
+
         icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-        
-        // Zapisz preferencję
+
+
         localStorage.setItem('theme', isDark ? 'light' : 'dark');
     });
 
     // Wyszukiwanie filmów
+    // Movie search
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         let searchTimeout;
@@ -449,6 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Obsługa kliknięcia poza modalem
+    // Handle clicks outside modal
     window.onclick = (event) => {
         const modal = document.getElementById('movie-modal');
         if (event.target === modal) {
@@ -457,6 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Dodaj inicjalizację formularza
+    // Add form initialization
     const reviewForm = document.getElementById('review-form');
     if (reviewForm) {
         reviewForm.addEventListener('submit', function (e) {
@@ -465,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Obsługa zakładek
+
     const tabButtons = document.querySelectorAll('.tab-button');
 
     tabButtons.forEach(button => {
@@ -481,9 +499,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Wyświetl domyślną kategorię (wszystkie)
+    // Display default category (all)
     displayMoviesByCategory('all');
 
-    // Dodaj na początku pliku obsługę dotykową
+    // Obsługa dotykowa dla modali na urządzeniach mobilnych
+    // Touch handling for modals on mobile devices
     const modals = document.querySelectorAll('.modal');
     modals.forEach(modal => {
         modal.addEventListener('touchmove', (e) => {
@@ -493,7 +513,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: false });
     });
 
-    // Obsługa burger menu
+    // Konfiguracja i obsługa menu hamburgerowego
+    // Hamburger menu configuration and handling
     const burgerMenu = document.querySelector('.burger-menu');
     const navLinks = document.querySelector('.nav-links');
     const navOverlay = document.querySelector('.nav-overlay');
@@ -505,7 +526,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
     });
 
-    // Zamykanie menu po kliknięciu w link lub overlay
+    // Funkcja zamykająca menu mobilne
+    // Function closing mobile menu
     const closeMenu = () => {
         burgerMenu.classList.remove('active');
         navLinks.classList.remove('active');
@@ -519,11 +541,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     navOverlay.addEventListener('click', closeMenu);
 
-    // Obsługa zmiany języka
+    // Obsługa przełączania języka interfejsu
+    // Interface language toggle handling
     const languageToggle = document.getElementById('language-toggle');
     const currentLang = languageToggle.querySelector('.current-lang');
-    
-    // Wczytaj zapisany język
+
+
     let currentLanguage = localStorage.getItem('language') || 'pl';
     updateLanguage(currentLanguage);
 
@@ -532,24 +555,25 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('language', currentLanguage);
         updateLanguage(currentLanguage);
     });
-
+    // Funkcja aktualizująca język interfejsu
+    // Function updating interface language
     function updateLanguage(lang) {
-        // Aktualizuj tekst przycisku
+
         currentLang.textContent = lang.toUpperCase();
 
-        // Aktualizuj teksty w nawigacji
+
         document.querySelector('a[href="#movies-section"]').textContent = translations[lang].reviews;
         document.querySelector('a[href="#suggestions-section"]').textContent = translations[lang].suggestions;
         document.querySelector('a[href="#categories-section"]').textContent = translations[lang].categories;
 
-        // Aktualizuj placeholder wyszukiwarki
+
         document.getElementById('search-input').placeholder = translations[lang].searchPlaceholder;
 
-        // Aktualizuj nagłówki sekcji
+
         document.querySelector('#movies-section h2').textContent = translations[lang].watchedMovies;
         document.querySelector('#suggestions-section h2').textContent = translations[lang].suggestedMovies;
 
-        // Aktualizuj przyciski kategorii
+
         document.querySelector('[data-category="all"]').textContent = translations[lang].all;
         document.querySelector('[data-category="action"]').textContent = translations[lang].action;
         document.querySelector('[data-category="comedy"]').textContent = translations[lang].comedy;
@@ -557,28 +581,28 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('[data-category="horror"]').textContent = translations[lang].horror;
         document.querySelector('[data-category="scifi"]').textContent = translations[lang].scifi;
 
-        // Aktualizuj teksty w modalach
+
         document.querySelector('#review-text').placeholder = translations[lang].addReview;
         document.querySelector('#rating').placeholder = translations[lang].rating;
         document.querySelector('#review-form button[type="submit"]').textContent = translations[lang].saveReview;
         document.querySelector('.full-review h3').textContent = translations[lang].myReview;
         document.querySelector('.logo-text').textContent = translations[lang].appTitle;
 
-        // Aktualizuj footer
+
         document.querySelector('.footer-content p:nth-child(1)').textContent = translations[lang].footerTitle;
         document.querySelector('.footer-content p:nth-child(2)').textContent = translations[lang].footerDescription;
         document.querySelector('.footer-content p:nth-child(3)').textContent = translations[lang].footerPowered;
 
-        // Aktualizuj komunikat o braku recenzji
+
         const suggestionsGrid = document.getElementById('suggestions-grid');
         if (reviews.length === 0 && suggestionsGrid) {
             suggestionsGrid.innerHTML = `<p>${translations[lang].noReviews}</p>`;
         }
 
-        // Zaktualizuj język API dla zapytań
+
         const apiLang = lang === 'pl' ? 'pl-PL' : 'en-US';
-        
-        // Odśwież wyświetlanie wszystkich filmów z nowym językiem
+
+
         displayReviews();
         displaySuggestions();
         const activeCategory = document.querySelector('.tab-button.active')?.dataset.category;
@@ -588,7 +612,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Dodaj nową funkcję do otwierania szczegółów recenzji
+// Funkcja otwierająca szczegóły recenzji
+// Function opening review details
 function openReviewDetails(reviewId) {
     const currentLang = localStorage.getItem('language') || 'pl';
     const review = reviews.find(r => r.id === reviewId);
@@ -611,7 +636,7 @@ function openReviewDetails(reviewId) {
     `;
 
     reviewTitle.textContent = translations[currentLang].myReviewTitle;
-    
+
     ratingDisplay.innerHTML = `
         <div class="rating-stars">
             <span class="rating-number">${translations[currentLang].rating} ${review.rating}/10</span>
@@ -623,22 +648,22 @@ function openReviewDetails(reviewId) {
     reviewDate.textContent = `${translations[currentLang].reviewDate} ${new Date(review.date).toLocaleDateString(currentLang === 'pl' ? 'pl-PL' : 'en-US')}`;
 
     modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Blokuje scrollowanie body
+    document.body.style.overflow = 'hidden';
 
-    // Obsługa zamykania
+
     const closeModal = () => {
         modal.style.display = 'none';
-        document.body.style.overflow = ''; // Przywraca scrollowanie
+        document.body.style.overflow = '';
     };
 
-    // Zamykanie przez przycisk
+
     const closeBtn = modal.querySelector('.close');
     closeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         closeModal();
     });
 
-    // Zamykanie przez kliknięcie poza modalem
+
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeModal();
@@ -646,7 +671,8 @@ function openReviewDetails(reviewId) {
     });
 }
 
-// Funkcja pomocnicza do generowania gwiazdek
+// Funkcja generująca wizualizację oceny w gwiazdkach
+// Function generating rating visualization with stars
 function generateStars(rating) {
     const fullStars = Math.floor(rating / 2);
     const halfStar = rating % 2 >= 1;
@@ -660,30 +686,32 @@ function generateStars(rating) {
 }
 
 // Konfiguracja TMDB API
+// TMDB API configuration
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const TMDB_API_KEY = '24d863d54c86392e6e1df55b9a328755';
 const TMDB_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNGQ4NjNkNTRjODYzOTJlNmUxZGY1NWI5YTMyODc1NSIsInN1YiI6IjY1ZTg3NmM5OTYzODY0MDE4NmI4OWZhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.BgD5J6KwXSzwjw0bH6TLjQQ-veMexE2-YyYBb-8Iy4U';
 
 // Funkcja pomocnicza do wykonywania zapytań do TMDB API
+// Helper function for making TMDB API requests
 async function fetchFromTMDB(endpoint) {
     try {
         const url = `${TMDB_BASE_URL}${endpoint}`;
-        const finalUrl = endpoint.includes('?') ? 
-            `${url}&api_key=${TMDB_API_KEY}` : 
+        const finalUrl = endpoint.includes('?') ?
+            `${url}&api_key=${TMDB_API_KEY}` :
             `${url}?api_key=${TMDB_API_KEY}`;
-            
+
         const response = await fetch(finalUrl, {
             headers: {
                 'Authorization': `Bearer ${TMDB_ACCESS_TOKEN}`,
                 'Content-Type': 'application/json'
             }
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         return await response.json();
     } catch (error) {
         console.error('Błąd podczas pobierania danych z TMDB:', error);
@@ -692,6 +720,7 @@ async function fetchFromTMDB(endpoint) {
 }
 
 // Przykład użycia w funkcji wyszukiwania
+// Example usage in search function
 async function searchMovies(query) {
     try {
         const data = await fetchFromTMDB(`/search/movie?query=${encodeURIComponent(query)}&language=pl-PL`);
@@ -714,7 +743,8 @@ async function getSuggestedMovies(movieId) {
         return [];
     }
 }
-
+// Funkcja pobierająca filmy z wybranej kategorii
+// Function fetching movies from selected category
 async function fetchMoviesByGenre(genreId) {
     try {
         const data = await fetchFromTMDB(`/discover/movie?with_genres=${genreId}&language=pl-PL&sort_by=popularity.desc`);
@@ -724,11 +754,12 @@ async function fetchMoviesByGenre(genreId) {
         return [];
     }
 }
-
+// Funkcja wyświetlająca filmy z wybranej kategorii
+// Function displaying movies from selected category
 async function displayMoviesByCategory(category) {
     const currentLang = localStorage.getItem('language') || 'pl';
     const apiLang = currentLang === 'pl' ? 'pl-PL' : 'en-US';
-    
+
     const moviesContainer = document.getElementById('movies-container');
     if (!moviesContainer) return;
 
@@ -762,8 +793,9 @@ async function displayMoviesByCategory(category) {
 }
 
 // Dodaj nowe klucze do istniejącego obiektu translations
+// Add new keys to existing translations object
 translations.pl = {
-    ...translations.pl,  // zachowaj istniejące tłumaczenia
+    ...translations.pl,
     yourReview: "Twoja recenzja...",
     rating: "Ocena (1-10)",
     saveReview: "Zapisz recenzję",
@@ -774,7 +806,7 @@ translations.pl = {
 };
 
 translations.en = {
-    ...translations.en,  // zachowaj istniejące tłumaczenia
+    ...translations.en,
     yourReview: "Your review...",
     rating: "Rating (1-10)",
     saveReview: "Save review",
