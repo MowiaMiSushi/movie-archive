@@ -208,7 +208,7 @@ function displaySearchResults(movies) {
                      onerror="this.src='https://via.placeholder.com/50x75'">
                 <div>
                     <h3>${movie.title}</h3>
-                    <p>${movie.release_date?.split('-')[0] || 'Brak daty'}</p>
+                    <p>${movie.release_date?.split('-')[0] || translations[currentLang].noDate}</p>
                 </div>
             </div>
         `).join('');
@@ -233,7 +233,8 @@ async function displaySuggestions() {
     if (!suggestionsGrid) return;
 
     if (reviews.length === 0) {
-        suggestionsGrid.innerHTML = '<p>Dodaj recenzje, aby zobaczyć sugestie filmów.</p>';
+        const currentLang = localStorage.getItem('language') || 'pl';
+        suggestionsGrid.innerHTML = `<p>${translations[currentLang].noReviewsYet}</p>`;
         return;
     }
 
@@ -268,40 +269,111 @@ async function fetchMoviesByGenre(genreId) {
 }
 
 async function displayMoviesByCategory(category) {
+    const currentLang = localStorage.getItem('language') || 'pl';
+    const apiLang = currentLang === 'pl' ? 'pl-PL' : 'en-US';
+    
     const moviesContainer = document.getElementById('movies-container');
     if (!moviesContainer) return;
 
     let movies = [];
 
-    if (category === 'all') {
+    try {
+        if (category === 'all') {
+            const data = await fetchFromTMDB(`/movie/popular?language=${apiLang}`);
+            movies = data.results;
+        } else {
+            movies = await fetchMoviesByGenre(GENRE_IDS[category], apiLang);
+        }
 
-        const response = await fetch(
-            `${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=pl-PL`
-        );
-        const data = await response.json();
-        movies = data.results;
-    } else {
-
-        movies = await fetchMoviesByGenre(GENRE_IDS[category]);
-    }
-
-    moviesContainer.innerHTML = movies
-        .map(movie => `
-            <div class="movie-card" onclick="selectMovie('${movie.id}')">
-                <img src="${TMDB_IMAGE_BASE_URL + movie.poster_path}" 
-                     alt="${movie.title}"
-                     onerror="this.src='https://via.placeholder.com/300x450'">
-                <div class="movie-info">
-                    <h3>${movie.title}</h3>
-                    <p>${movie.release_date?.split('-')[0] || 'Brak daty'}</p>
-                    <p class="movie-rating">Ocena: ${movie.vote_average.toFixed(1)}/10</p>
+        moviesContainer.innerHTML = movies
+            .map(movie => `
+                <div class="movie-card" onclick="selectMovie('${movie.id}')">
+                    <img src="${TMDB_IMAGE_BASE_URL + movie.poster_path}" 
+                         alt="${movie.title}"
+                         onerror="this.src='https://via.placeholder.com/300x450'">
+                    <div class="movie-info">
+                        <h3>${movie.title}</h3>
+                        <p>${movie.release_date?.split('-')[0] || translations[currentLang].noDate}</p>
+                        <p class="movie-rating">${translations[currentLang].tmdbRating} ${movie.vote_average.toFixed(1)}/10</p>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+    } catch (error) {
+        console.error('Błąd wyświetlania filmów:', error);
+        moviesContainer.innerHTML = `<p>${translations[currentLang].loadingError}</p>`;
+    }
 }
 
-// Inicjalizacja przy załadowaniu strony
-document.addEventListener('DOMContentLoaded', function () {
+// Dodaj na początku pliku słownik tłumaczeń
+const translations = {
+    pl: {
+        reviews: "Recenzje",
+        suggestions: "Sugestie",
+        categories: "Kategorie",
+        searchPlaceholder: "Wyszukaj film / serial...",
+        watchedMovies: "Obejrzane Filmy i Seriale - Moje Recenzje",
+        suggestedMovies: "Sugerowane Filmy i Seriale",
+        all: "Wszystkie",
+        action: "Akcja",
+        comedy: "Komedia",
+        drama: "Dramat",
+        horror: "Horror",
+        scifi: "Sci-Fi",
+        saveReview: "Zapisz recenzję",
+        yourReview: "Twoja recenzja...",
+        rating: "Ocena (1-10)",
+        myReview: "Moja recenzja:",
+        reviewDate: "Data recenzji:",
+        deleteConfirm: "Czy na pewno chcesz usunąć tę recenzję?",
+        characters: "znaków",
+        noReviews: "Dodaj recenzje, aby zobaczyć sugestie filmów.",
+        footerTitle: "© 2024 Archiwum Filmowe tworzone przez Aleksander Wacławik. Wszystkie prawa zastrzeżone.",
+        footerDescription: "Strona dla osób uwielbiających film i seriale. Strona ma ułatwić zapamiętanie filmów i seriali, które obejrzałeś oraz podpowiada podobne filmy względem tego co już obejrzałeś.",
+        footerPowered: "Powered by TMDB API",
+        tmdbRating: "Ocena TMDB:",
+        searchError: "Wystąpił błąd podczas wyszukiwania.",
+        noDate: "Brak daty",
+        loadingError: "Wystąpił błąd podczas ładowania filmów.",
+        addReview: "Twoja recenzja...",
+        appTitle: "Moje Archiwum",
+        noReviewsYet: "Dodaj recenzje, aby zobaczyć sugestie filmów."
+    },
+    en: {
+        reviews: "Reviews",
+        suggestions: "Suggestions",
+        categories: "Categories",
+        searchPlaceholder: "Search movies / TV shows...",
+        watchedMovies: "Watched Movies and TV Shows - My Reviews",
+        suggestedMovies: "Suggested Movies and TV Shows",
+        all: "All",
+        action: "Action",
+        comedy: "Comedy",
+        drama: "Drama",
+        horror: "Horror",
+        scifi: "Sci-Fi",
+        saveReview: "Save Review",
+        yourReview: "Your review...",
+        rating: "Rating (1-10)",
+        myReview: "My Review:",
+        reviewDate: "Review date:",
+        deleteConfirm: "Are you sure you want to delete this review?",
+        characters: "characters",
+        noReviews: "Add reviews to see movie suggestions.",
+        footerTitle: "© 2024 Movie Archive created by Aleksander Wacławik. All rights reserved.",
+        footerDescription: "A website for movie and TV series enthusiasts. The site helps you remember the movies and series you've watched and suggests similar ones based on what you've already seen.",
+        footerPowered: "Powered by TMDB API",
+        tmdbRating: "TMDB Rating:",
+        searchError: "An error occurred while searching.",
+        noDate: "No date",
+        loadingError: "An error occurred while loading movies.",
+        addReview: "Your review...",
+        appTitle: "My Archive",
+        noReviewsYet: "Add reviews to see movie suggestions."
+    }
+};
+
+// Dodaj w funkcji DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
 
     if (isLocalStorageAvailable()) {
         reviews = JSON.parse(localStorage.getItem('movieReviews')) || [];
@@ -426,6 +498,74 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     navOverlay.addEventListener('click', closeMenu);
+
+    // Obsługa zmiany języka
+    const languageToggle = document.getElementById('language-toggle');
+    const currentLang = languageToggle.querySelector('.current-lang');
+    
+    // Wczytaj zapisany język
+    let currentLanguage = localStorage.getItem('language') || 'pl';
+    updateLanguage(currentLanguage);
+
+    languageToggle.addEventListener('click', () => {
+        currentLanguage = currentLanguage === 'pl' ? 'en' : 'pl';
+        localStorage.setItem('language', currentLanguage);
+        updateLanguage(currentLanguage);
+    });
+
+    function updateLanguage(lang) {
+        // Aktualizuj tekst przycisku
+        currentLang.textContent = lang.toUpperCase();
+
+        // Aktualizuj teksty w nawigacji
+        document.querySelector('a[href="#movies-section"]').textContent = translations[lang].reviews;
+        document.querySelector('a[href="#suggestions-section"]').textContent = translations[lang].suggestions;
+        document.querySelector('a[href="#categories-section"]').textContent = translations[lang].categories;
+
+        // Aktualizuj placeholder wyszukiwarki
+        document.getElementById('search-input').placeholder = translations[lang].searchPlaceholder;
+
+        // Aktualizuj nagłówki sekcji
+        document.querySelector('#movies-section h2').textContent = translations[lang].watchedMovies;
+        document.querySelector('#suggestions-section h2').textContent = translations[lang].suggestedMovies;
+
+        // Aktualizuj przyciski kategorii
+        document.querySelector('[data-category="all"]').textContent = translations[lang].all;
+        document.querySelector('[data-category="action"]').textContent = translations[lang].action;
+        document.querySelector('[data-category="comedy"]').textContent = translations[lang].comedy;
+        document.querySelector('[data-category="drama"]').textContent = translations[lang].drama;
+        document.querySelector('[data-category="horror"]').textContent = translations[lang].horror;
+        document.querySelector('[data-category="scifi"]').textContent = translations[lang].scifi;
+
+        // Aktualizuj teksty w modalach
+        document.querySelector('#review-text').placeholder = translations[lang].addReview;
+        document.querySelector('#rating').placeholder = translations[lang].rating;
+        document.querySelector('#review-form button[type="submit"]').textContent = translations[lang].saveReview;
+        document.querySelector('.full-review h3').textContent = translations[lang].myReview;
+        document.querySelector('.logo-text').textContent = translations[lang].appTitle;
+
+        // Aktualizuj footer
+        document.querySelector('.footer-content p:nth-child(1)').textContent = translations[lang].footerTitle;
+        document.querySelector('.footer-content p:nth-child(2)').textContent = translations[lang].footerDescription;
+        document.querySelector('.footer-content p:nth-child(3)').textContent = translations[lang].footerPowered;
+
+        // Aktualizuj komunikat o braku recenzji
+        const suggestionsGrid = document.getElementById('suggestions-grid');
+        if (reviews.length === 0 && suggestionsGrid) {
+            suggestionsGrid.innerHTML = `<p>${translations[lang].noReviews}</p>`;
+        }
+
+        // Zaktualizuj język API dla zapytań
+        const apiLang = lang === 'pl' ? 'pl-PL' : 'en-US';
+        
+        // Odśwież wyświetlanie wszystkich filmów z nowym językiem
+        displayReviews();
+        displaySuggestions();
+        const activeCategory = document.querySelector('.tab-button.active')?.dataset.category;
+        if (activeCategory) {
+            displayMoviesByCategory(activeCategory);
+        }
+    }
 });
 
 // Dodaj nową funkcję do otwierania szczegółów recenzji
@@ -562,6 +702,9 @@ async function fetchMoviesByGenre(genreId) {
 }
 
 async function displayMoviesByCategory(category) {
+    const currentLang = localStorage.getItem('language') || 'pl';
+    const apiLang = currentLang === 'pl' ? 'pl-PL' : 'en-US';
+    
     const moviesContainer = document.getElementById('movies-container');
     if (!moviesContainer) return;
 
@@ -569,10 +712,10 @@ async function displayMoviesByCategory(category) {
 
     try {
         if (category === 'all') {
-            const data = await fetchFromTMDB('/movie/popular?language=pl-PL');
+            const data = await fetchFromTMDB(`/movie/popular?language=${apiLang}`);
             movies = data.results;
         } else {
-            movies = await fetchMoviesByGenre(GENRE_IDS[category]);
+            movies = await fetchMoviesByGenre(GENRE_IDS[category], apiLang);
         }
 
         moviesContainer.innerHTML = movies
@@ -583,14 +726,14 @@ async function displayMoviesByCategory(category) {
                          onerror="this.src='https://via.placeholder.com/300x450'">
                     <div class="movie-info">
                         <h3>${movie.title}</h3>
-                        <p>${movie.release_date?.split('-')[0] || 'Brak daty'}</p>
-                        <p class="movie-rating">Ocena: ${movie.vote_average.toFixed(1)}/10</p>
+                        <p>${movie.release_date?.split('-')[0] || translations[currentLang].noDate}</p>
+                        <p class="movie-rating">${translations[currentLang].tmdbRating} ${movie.vote_average.toFixed(1)}/10</p>
                     </div>
                 </div>
             `).join('');
     } catch (error) {
         console.error('Błąd wyświetlania filmów:', error);
-        moviesContainer.innerHTML = '<p>Wystąpił błąd podczas ładowania filmów.</p>';
+        moviesContainer.innerHTML = `<p>${translations[currentLang].loadingError}</p>`;
     }
 }
 

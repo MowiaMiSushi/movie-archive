@@ -800,3 +800,70 @@ nav {
         display: block;
     }
 }
+
+/* Dodaj style dla przycisków w nav-controls */
+.nav-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-controls button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-controls button:hover {
+    background-color: var(--background-color);
+}
+
+.current-lang {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Dostosuj style dla mobile */
+@media (max-width: 768px) {
+    .nav-controls {
+        position: fixed;
+        right: 70px;
+        top: 20px;
+        z-index: 1001;
+        background-color: var(--secondary-color);
+        padding: 5px;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .burger-menu {
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        z-index: 1000;
+    }
+
+    .logo {
+        margin-left: 20px;
+        margin-right: 120px;
+        z-index: 999;
+        max-width: calc(100% - 200px);
+    }
+
+    .logo-text {
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    header {
+        padding: 16px 70px 16px 16px;
+    }
+}
