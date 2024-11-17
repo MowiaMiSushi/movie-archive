@@ -1,4 +1,5 @@
-/* Zmienne globalne */
+/* Zmienne globalne definiujące podstawowe kolory i motywy strony */
+/* Global variables defining basic colors and themes */
 :root {
     --primary-color: #1a1a1a;
     --secondary-color: #ffffff;
@@ -7,7 +8,8 @@
     --text-color: #333333;
 }
 
-/* Ciemny motyw */
+/* Podstawowe style dla elementów strukturalnych */
+/* Basic styles for structural elements */
 .dark-theme {
     --primary-color: #ffffff;
     --secondary-color: #1a1a1a;
@@ -16,7 +18,7 @@
     --text-color: #ffffff;
 }
 
-/* Stylowanie strony */
+/* Stylowanie strony / Page styling */
 body {
     margin: 0;
     padding: 0;
@@ -26,14 +28,14 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Stylowanie nagłówka */
+/* Stylowanie nagłówka / Header styling */
 header {
     background-color: var(--secondary-color);
     box-shadow: 0 2px 5px #0000001a;
     padding: 16px;
 }
 
-/* Stylowanie nawigacji */
+/* Stylowanie nawigacji / Navigation styling */
 nav {
     display: flex;
     justify-content: space-between;
@@ -42,7 +44,7 @@ nav {
     margin: 0 auto;
 }
 
-/* Stylowanie logo */
+/* Stylowanie logo / Logo styling */
 .logo {
     display: flex;
     align-items: center;
@@ -66,7 +68,7 @@ nav {
     text-transform: uppercase;
 }
 
-/* Animacja dla ikony */
+/* Animacja dla ikony / Icon animation */
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -77,7 +79,7 @@ nav {
     }
 }
 
-/* Efekt hover */
+/* Efekt hover / Hover effect */
 .logo:hover .logo-icon {
     animation-duration: 3s;
 }
@@ -87,7 +89,7 @@ nav {
     transition: color 0.3s ease;
 }
 
-/* Responsywność */
+/* Responsywność / Responsiveness */
 @media (max-width: 768px) {
     .logo-text {
         font-size: 20px;
@@ -98,20 +100,20 @@ nav {
     }
 }
 
-/* Stylowanie sekcji wyszukiwania */
+/* Stylowanie sekcji wyszukiwania / Search section styling */
 .search-section {
     padding: 32px;
     max-width: 800px;
     margin: 0 auto;
 }
 
-/* Stylowanie kontenera wyszukiwania */
+/* Stylowanie kontenera wyszukiwania / Search container styling */
 .search-container {
     position: relative;
     margin-right: 30px;
 }
 
-/* Stylowanie pola wyszukiwania */
+/* Stylowanie pola wyszukiwania / Search input styling */
 #search-input {
     width: 100%;
     padding: 16px;
@@ -122,7 +124,7 @@ nav {
     color: var(--text-color);
 }
 
-/* Stylowanie wyników wyszukiwania */
+/* Stylowanie wyników wyszukiwania / Search results styling */
 .search-results {
     position: absolute;
     top: 100%;
@@ -136,7 +138,7 @@ nav {
     overflow-y: auto;
 }
 
-/* Stylowanie pojedynczego wyniku wyszukiwania */
+/* Stylowanie pojedynczego wyniku wyszukiwania / Single search result styling */
 .search-result {
     display: flex;
     align-items: center;
@@ -145,12 +147,12 @@ nav {
     transition: background-color 0.3s ease;
 }
 
-/* Efekt hover dla wyniku wyszukiwania */
+/* Efekt hover dla wyniku wyszukiwania / Hover effect for search result */
 .search-result:hover {
     background-color: var(--background-color);
 }
 
-/* Stylowanie obrazu wyniku wyszukiwania */
+/* Stylowanie obrazu wyniku wyszukiwania / Search result image styling */
 .search-result img {
     width: 50px;
     height: 75px;
@@ -159,19 +161,19 @@ nav {
     border-radius: 3px;
 }
 
-/* Stylowanie diva z informacjami o filmie */
+/* Stylowanie diva z informacjami o filmie / Movie information styling */
 .search-result div {
     flex: 1;
 }
 
-/* Stylowanie h3 z tytułem filmu */
+/* Stylowanie h3 z tytułem filmu / Movie title styling */
 .search-result h3 {
     margin: 0;
     font-size: 16px;
     color: var(--text-color);
 }
 
-/* Stylowanie p z datą filmu */
+/* Stylowanie p z datą filmu / Movie date styling */
 .search-result p {
     margin: 4px 0px 0px;
     font-size: 14px;
@@ -179,7 +181,7 @@ nav {
     opacity: 0.8;
 }
 
-/* Stylowanie siatki filmów */
+/* Stylowanie siatki filmów / Movies grid styling */
 .movies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -190,7 +192,7 @@ nav {
     justify-content: center;
 }
 
-/* Stylowanie karty filmu */
+/* Stylowanie karty filmu / Movie card styling */
 .movie-card {
     display: flex;
     flex-direction: column;
@@ -202,14 +204,14 @@ nav {
     position: relative;
 }
 
-/* Stylowanie obrazu filmu */
+/* Stylowanie obrazu filmu / Movie image styling */
 .movie-card img {
     width: 100%;
     height: 250px;
     object-fit: cover;
 }
 
-/* Stylowanie diva z informacjami o filmie */
+/* Stylowanie diva z informacjami o filmie / Movie information styling */
 .movie-info {
     flex: 1;
     padding: 24px;
@@ -218,20 +220,20 @@ nav {
     gap: 8px;
 }
 
-/* Stylowanie h3 z tytułem filmu */
+/* Stylowanie h3 z tytułem filmu / Movie title styling */
 .movie-info h3 {
     margin: 0;
     color: var(--text-color);
     font-size: 16px;
 }
 
-/* Stylowanie p z oceną filmu */
+/* Stylowanie p z oceną filmu / Movie rating styling */
 .movie-rating {
     color: var(--accent-color);
     font-weight: bold;
 }
 
-/* Stylowanie modalu */
+/* Stylowanie modalu / Modal styling */
 .modal {
     display: none;
     position: fixed;
@@ -245,7 +247,7 @@ nav {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Stylowanie kontentu modalu */
+/* Stylowanie kontentu modalu / Modal content styling */
 .modal-content {
     background-color: var(--background-color);
     margin: 20px auto;
@@ -259,7 +261,7 @@ nav {
 .review-text-container {
     margin-right: 32px;
 }
-/* Stylowanie przycisku zamykania modalu */
+/* Stylowanie przycisku zamykania modalu / Close button styling */
 .close {
     position: absolute;
     right: 16px;
@@ -269,7 +271,7 @@ nav {
     color: var(--text-color);
 }
 
-/* Stylowanie diva z informacjami o filmie w modalu */
+/* Stylowanie diva z informacjami o filmie w modalu / Movie information in modal styling */
 .modal-movie-info {
     display: flex;
     gap: 32px;
@@ -277,7 +279,7 @@ nav {
     flex-direction: column;
 }
 
-/* Stylowanie obrazu filmu w modalu */
+/* Stylowanie obrazu filmu w modalu / Movie image in modal styling */
 .modal-movie-info img {
     width: 200px;
     height: 300px;
@@ -285,14 +287,14 @@ nav {
     border-radius: 10px;
 }
 
-/* Stylowanie formularza recenzji */
+/* Stylowanie formularza recenzji / Review form styling */
 #review-form {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-/* Stylowanie pola tekstowego recenzji */
+/* Stylowanie pola tekstowego recenzji / Review text field styling */
 #review-text {
     width: 100%;
     min-height: 150px;
@@ -305,7 +307,7 @@ nav {
     margin-bottom: 4px;
 }
 
-/* Stylowanie pola oceny */
+/* Stylowanie pola oceny / Rating field styling */
 #rating {
     width: 100px;
     padding: 8px;
@@ -315,7 +317,7 @@ nav {
     color: var(--text-color);
 }
 
-/* Stylowanie przycisku zapisu recenzji */
+/* Stylowanie przycisku zapisu recenzji / Save review button styling */
 #review-form button {
     padding: 16px 32px;
     background-color: var(--accent-color);
@@ -327,12 +329,12 @@ nav {
     transition: background-color 0.3s ease;
 }
 
-/* Efekt hover dla przycisku zapisu recenzji */
+/* Efekt hover dla przycisku zapisu recenzji / Save review button hover effect */
 #review-form button:hover {
     background-color: #a1db02;
 }
 
-/* Nowe style dla sekcji */
+/* Nowe style dla sekcji / New styles for sections */
 .watched-movies-section,
 .suggestions-section {
     padding: 32px;
@@ -340,7 +342,7 @@ nav {
     margin: 0 auto;
 }
 
-/* Stylowanie h2 z tytułem sekcji */
+/* Stylowanie h2 z tytułem sekcji / Section title styling */
 section h2 {
     color: var(--text-color);
     margin-bottom: 24px;
@@ -349,7 +351,7 @@ section h2 {
     position: relative;
 }
 
-/* Stylowanie pseudoelementu pozycjonującego podkreślenie */
+/* Stylowanie pseudoelementu pozycjonującego podkreślenie / Underline positioning pseudoelement */
 section h2::after {
     content: '';
     position: absolute;
@@ -361,7 +363,7 @@ section h2::after {
     background-color: var(--accent-color);
 }
 
-/* Stylowanie footer */
+/* Stylowanie footer / Footer styling */
 footer {
     background-color: var(--secondary-color);
     color: var(--text-color);
@@ -369,14 +371,14 @@ footer {
     margin-top: 64px;
 }
 
-/* Stylowanie diva z treścią footer */
+/* Stylowanie diva z treścią footer / Footer content styling */
 .footer-content {
     max-width: 1200px;
     margin: 0 auto;
     text-align: center;
 }
 
-/* Stylowanie nawigacji */
+/* Stylowanie nawigacji / Navigation styling */
 .nav-links {
     display: flex;
     list-style: none;
@@ -397,7 +399,7 @@ footer {
     color: var(--accent-color);
 }
 
-/* Stylowanie przycisku usuwania */
+/* Stylowanie przycisku usuwania / Delete button styling */
 .movie-card {
     position: relative;
 }
@@ -423,7 +425,7 @@ footer {
     background-color: #ff0000;
 }
 
-/* Dodaj efekt hover dla karty filmu */
+/* Dodaj efekt hover dla karty filmu / Add hover effect for movie card */
 .movie-card .delete-button {
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -531,7 +533,7 @@ nav {
     }
 }
 
-/* Stylowanie zakładek */
+/* Stylowanie zakładek / Tabs styling */
 .tabs {
     display: flex;
     gap: 8px;
@@ -569,7 +571,7 @@ nav {
     color: #ffffff;
 }
 
-/* Responsywność */
+/* Responsywność / Responsiveness */
 @media (max-width: 768px) {
     .tabs {
         justify-content: flex-start;
@@ -578,7 +580,7 @@ nav {
     }
 }
 
-/* Dodatkowe style dla lepszego wycentrowania na większych ekranach */
+/* Dodatkowe style dla lepszego wycentrowania na większych ekranach / Additional styles for better centering on larger screens */
 @media (min-width: 1200px) {
     .movies-grid {
         grid-template-columns: repeat(auto-fit, 200px);
@@ -638,8 +640,8 @@ nav {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: rgba(255, 0, 0, 0.7);
-    color: white;
+    background: #ff0000b3;
+    color: #ffffff;
     border-radius: 50%;
     width: 25px;
     height: 25px;
@@ -651,10 +653,10 @@ nav {
 }
 
 .delete-button:hover {
-    background: rgba(255, 0, 0, 0.9);
+    background: #ff0000e6;
 }
 
-/* Responsywne style dla modalu */
+/* Responsywne style dla modalu / Responsive styles for modal */
 @media (max-width: 768px) {
     .modal-content {
         margin: 10px;
@@ -688,7 +690,7 @@ nav {
     }
 }
 
-/* Poprawki dla przycisków w modalu na mobile */
+/* Poprawki dla przycisków w modalu na mobile / Mobile modal button fixes */
 .close {
     width: 40px;
     height: 40px;
@@ -701,7 +703,7 @@ nav {
     touch-action: manipulation;
 }
 
-/* Dodaj style dla licznika znaków i skróconej recenzji */
+/* Dodaj style dla licznika znaków i skróconej recenzji / Add styles for character counter and shortened review */
 .character-counter {
     text-align: right;
     color: var(--text-color);
@@ -724,7 +726,7 @@ nav {
     padding-left: 4px;
 }
 
-/* Stylowanie burger menu */
+/* Stylowanie burger menu / Burger menu styling */
 .burger-menu {
     display: none;
     cursor: pointer;
@@ -739,7 +741,7 @@ nav {
     transition: 0.4s;
 }
 
-/* Klasa dla aktywnego burgera */
+/* Klasa dla aktywnego burgera / Active burger class */
 .burger-menu.active .bar:nth-child(1) {
     transform: rotate(-45deg) translate(-5px, 6px);
 }
@@ -752,7 +754,7 @@ nav {
     transform: rotate(45deg) translate(-5px, -6px);
 }
 
-/* Modyfikacja istniejących styli nawigacji */
+/* Modyfikacja istniejących styli nawigacji / Modifying existing navigation styles */
 @media (max-width: 768px) {
     .burger-menu {
         display: block;
@@ -784,7 +786,7 @@ nav {
         margin: 20px 0;
     }
 
-    /* Przyciemnienie tła gdy menu jest aktywne */
+    /* Przyciemnienie tła gdy menu jest aktywne / Darkening background when menu is active */
     .nav-overlay {
         display: none;
         position: fixed;
@@ -801,7 +803,7 @@ nav {
     }
 }
 
-/* Dodaj style dla przycisków w nav-controls */
+/* Dodaj style dla przycisków w nav-controls / Add styles for buttons in nav-controls */
 .nav-controls {
     display: flex;
     gap: 10px;
@@ -829,7 +831,7 @@ nav {
     font-weight: bold;
 }
 
-/* Dostosuj style dla mobile */
+/* Dostosuj style dla mobile / Adjust styles for mobile */
 @media (max-width: 768px) {
     .nav-controls {
         position: fixed;
